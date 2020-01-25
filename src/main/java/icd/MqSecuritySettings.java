@@ -5,14 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
 
-public class SecuritySettings {
+public class MqSecuritySettings {
 
   String match;
   Map<String, List<String>> typeToPermissions = new HashMap<>();
 
-  public SecuritySettings parse(Element element) {
+  public MqSecuritySettings parse(Element element) {
     match = element.attr("match");
     element.children().forEach(this::parsePermission);
     return this;

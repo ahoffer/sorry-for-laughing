@@ -9,7 +9,6 @@ import static org.mockito.Mockito.mock;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,15 +18,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.Test;
 
-public class ActiveMqConfigurationParsingTest {
-
-  Document getResourceAsDocument(String filename) throws IOException {
-    return Jsoup.parse(getResourceAsString(filename));
-  }
+public class MqConfigurationParsingTest {
 
   @Test
   public void testAddress() throws IOException {
-    Element e = getResourceAsDocument("address.xml").getElementsByTag("address").first();
+    Element e = getResourceAsDocument("/address.xml").getElementsByTag("address").first();
     Address addr = new Address().parse(e);
     assertThat(addr.name, is("qname"));
     assertThat(addr.routingType, is("anycast"));
@@ -37,10 +32,10 @@ public class ActiveMqConfigurationParsingTest {
 
   @Test
   public void testSecurity() throws IOException {
-    Element e = getResourceAsDocument("security.xml").getElementsByTag("security-setting").first();
-    SecuritySettings securitySettings = new SecuritySettings().parse(e);
-    assertThat(securitySettings.match, is("input.#"));
-    Map<String, List<String>> permissions = securitySettings.typeToPermissions;
+    Element e = getResourceAsDocument("/security.xml").getElementsByTag("security-setting").first();
+    MqSecuritySettings mqSecuritySettings = new MqSecuritySettings().parse(e);
+    assertThat(mqSecuritySettings.match, is("input.#"));
+    Map<String, List<String>> permissions = mqSecuritySettings.typeToPermissions;
     assertThat(permissions.size(), is(1));
     assertThat(permissions, hasKey(("type")));
     assertThat(permissions.get("type"), containsInAnyOrder("one", "two", "three"));
@@ -62,10 +57,15 @@ public class ActiveMqConfigurationParsingTest {
     Optional<DocumentationComment> dc =
         DocumentationComment.attemptToCreate("UNRECOGNIZED: I am not a teapot");
     assertThat(dc.isPresent(), is(false));
+
   }
 
-  private String getResourceAsString(String filename) throws IOException {
+  static String getResourceAsString(String filename) throws IOException {
     return IOUtils.toString(
-        new File(getClass().getClassLoader().getResource(filename).getFile()).toURI());
+        new File(MqConfigurationComponentTest.class.getResource(filename).getFile()).toURI());
+  }
+
+  static Document getResourceAsDocument(String filename) throws IOException {
+    return Jsoup.parse(getResourceAsString(filename));
   }
 }
