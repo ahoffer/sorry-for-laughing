@@ -13,11 +13,6 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>artemis-jms-server</artifactId>
-            <version>2.10.0</version>
-        </dependency>
-        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
@@ -27,11 +22,6 @@
             <artifactId>mockito-core</artifactId>
             <version>3.2.4</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.codice.ddf.broker</groupId>
-            <artifactId>broker-adapter</artifactId>
-            <version>2.15.0</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -51,33 +41,4 @@
             <version>1.12.1</version>
         </dependency>
     </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <archive>
-                                <manifest>
-                                    <mainClass>
-                                        main.Main
-                                    </mainClass>
-                                </manifest>
-                            </archive>
-                            <descriptorRefs>
-                                <descriptorRef>jar-with-dependencies</descriptorRef>
-                            </descriptorRefs>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>
