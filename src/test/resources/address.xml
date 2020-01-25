@@ -1,0 +1,6 @@
+<address name="qname">
+    <!--DESCRIPTION: I am a teapot -->
+    <anycast>
+        <queue name="DLQ"/>
+    </anycast>
+</address>
