@@ -7,14 +7,18 @@ import org.jsoup.nodes.Comment;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 
-public class Address {
+public class MqAddress {
 
   String routingType;
   String name;
   File asciiDoctorTemplate;
   List<DocumentationComment> doclets = new ArrayList<>();
 
-  Address parse(Element e) {
+  MqAddress(Element element) {
+    parse(element);
+  }
+
+  MqAddress parse(Element e) {
     name = e.attr("name");
     e.childNodes()
         .forEach(

@@ -5,13 +5,14 @@ import java.util.Map;
 
 public class MqEndpoint {
 
+  public Map<String, List<String>> getPermissions() {
+    return null;
+  }
+
   public String getName() {
     return null;
   }
 
-  public Map<String, List<String>> getPermissions() {
-    return null;
-  }
 
   public String getRoutingType() {
     return null;

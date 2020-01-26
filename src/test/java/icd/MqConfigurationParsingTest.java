@@ -23,7 +23,7 @@ public class MqConfigurationParsingTest {
   @Test
   public void testAddress() throws IOException {
     Element e = getResourceAsDocument("/address.xml").getElementsByTag("address").first();
-    Address addr = new Address().parse(e);
+    MqAddress addr = new MqAddress(e);
     assertThat(addr.name, is("qname"));
     assertThat(addr.routingType, is("anycast"));
     assertThat(addr.doclets.size(), is(1));
@@ -33,7 +33,7 @@ public class MqConfigurationParsingTest {
   @Test
   public void testSecurity() throws IOException {
     Element e = getResourceAsDocument("/security.xml").getElementsByTag("security-setting").first();
-    MqSecuritySettings mqSecuritySettings = new MqSecuritySettings().parse(e);
+    MqSecuritySetting mqSecuritySettings = new MqSecuritySetting().parse(e);
     assertThat(mqSecuritySettings.match, is("input.#"));
     Map<String, List<String>> permissions = mqSecuritySettings.typeToPermissions;
     assertThat(permissions.size(), is(1));
@@ -43,7 +43,6 @@ public class MqConfigurationParsingTest {
 
   @Test
   public void testRecognizedComment() throws IOException {
-    //    Arrays.asList(, "UNRECOGNIZED: I am not a teapot").;
     // Test trimming the string too
     Optional<DocumentationComment> dc =
         DocumentationComment.attemptToCreate("DESCRIPTION:teapot  ");
@@ -57,7 +56,6 @@ public class MqConfigurationParsingTest {
     Optional<DocumentationComment> dc =
         DocumentationComment.attemptToCreate("UNRECOGNIZED: I am not a teapot");
     assertThat(dc.isPresent(), is(false));
-
   }
 
   static String getResourceAsString(String filename) throws IOException {

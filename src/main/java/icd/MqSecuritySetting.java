@@ -6,12 +6,20 @@ import java.util.List;
 import java.util.Map;
 import org.jsoup.nodes.Element;
 
-public class MqSecuritySettings {
+public class MqSecuritySetting {
 
   String match;
   Map<String, List<String>> typeToPermissions = new HashMap<>();
 
-  public MqSecuritySettings parse(Element element) {
+  MqSecuritySetting(Element element) {
+    parse(element);
+  }
+
+  public MqSecuritySetting merge(MqSecuritySetting mqSecuritySetting) {
+    return null;
+  }
+
+  public MqSecuritySetting parse(Element element) {
     match = element.attr("match");
     element.children().forEach(this::parsePermission);
     return this;

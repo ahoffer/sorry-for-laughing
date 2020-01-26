@@ -20,24 +20,24 @@ public class MqConfigurationComponentTest {
     Document doc = MqConfigurationParsingTest.getResourceAsDocument("/artemis.xml");
     MqConfiguration config = new MqConfiguration().parse(doc);
     assertThat(config.size(), is(2));
-    MqEndpoint endpoint = config.get(0);
-    assertThat(endpoint.getName(), is("afdcgs.geoint.chat.message.high"));
-    assertThat(endpoint.getRoutingType(), is("multicast"));
-    Map<String, List<String>> permissions = endpoint.getPermissions();
+    MqEndpoint afdcgsEndpoint = config.get(0);
+    assertThat(afdcgsEndpoint.getName(), is("afdcgs.geoint.chat.message.high"));
+    assertThat(afdcgsEndpoint.getRoutingType(), is("multicast"));
+    Map<String, List<String>> permissions = afdcgsEndpoint.getPermissions();
     assertThat(permissions.size(), is(2));
     assertThat(permissions, hasKey("createNonDurableQueue"));
     assertThat(permissions.get("createNonDurableQueue"), containsInAnyOrder("nonDurable"));
-    MqEndpoint endpoint1 = config.get(1);
-    assertThat(endpoint1.getName(), is("pulse.mission.information"));
-    assertThat(endpoint1.getRoutingType(), is("anycast"));
-    Map<String, List<String>> permissions2 = endpoint1.getPermissions();
-    assertThat(permissions2.size(), is(3));
-    assertThat(permissions2, hasKey("createNonDurableQueue"));
-    assertThat(permissions2, hasKey("deleteDurableQueue"));
-    assertThat(permissions2, hasKey("addedtype"));
+    MqEndpoint pulseEndpoint = config.get(1);
+    assertThat(pulseEndpoint.getName(), is("pulse.mission.information"));
+    assertThat(pulseEndpoint.getRoutingType(), is("anycast"));
+    Map<String, List<String>> pulsePermissions = pulseEndpoint.getPermissions();
+    assertThat(pulsePermissions.size(), is(3));
+    assertThat(pulsePermissions, hasKey("createNonDurableQueue"));
+    assertThat(pulsePermissions, hasKey("deleteDurableQueue"));
+    assertThat(pulsePermissions, hasKey("addedtype"));
     assertThat(
         permissions.get("createNonDurabflupleQueue"), containsInAnyOrder("nonDurable", "addRole"));
-    assertThat(permissions2.get("deleteDurableQueue"), containsInAnyOrder("manager", "tester"));
-    assertThat(permissions2.get("addedType"), containsInAnyOrder("manager"));
+    assertThat(pulsePermissions.get("deleteDurableQueue"), containsInAnyOrder("manager", "tester"));
+    assertThat(pulsePermissions.get("addedType"), containsInAnyOrder("manager"));
   }
 }
