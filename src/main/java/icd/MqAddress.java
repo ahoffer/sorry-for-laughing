@@ -3,43 +3,32 @@ package icd;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import org.jsoup.nodes.Comment;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
 
 public class MqAddress {
 
-  String routingType;
-  String name;
-  File asciiDoctorTemplate;
-  List<DocumentationComment> doclets = new ArrayList<>();
+    String routingType;
+    String name;
+    File asciiDoctorTemplate;
+    List<DocumentationComment> documentationComments = new ArrayList<>();
 
-  MqAddress(Element element) {
-    parse(element);
-  }
-
-  MqAddress parse(Element e) {
-    name = e.attr("name");
-    e.childNodes()
-        .forEach(
-            endpointChild -> {
-              processComment(endpointChild);
-              processRoutingType(endpointChild);
-            });
-    return this;
-  }
-
-  void processRoutingType(Node node) {
-    if (!(node instanceof org.jsoup.nodes.Element)) return;
-    String tagName = ((org.jsoup.nodes.Element) node).tagName();
-    if (tagName.equals("anycast") || tagName.equals("multicast")) {
-      routingType = tagName;
+    MqAddress(Element element) {
+        parse(element);
     }
-  }
 
-  void processComment(Node node) {
-    if (!(node instanceof Comment)) return;
-    String comment = ((Comment) node).getData();
-    DocumentationComment.attemptToCreate(comment).map(doclets::add);
-  }
+    void parse(Element element) {
+        name = element.attr("name");
+        documentationComments = element.childNodes().stream().map(DocumentationComment::attemptToCreate).filter(Objects::nonNull).collect(Collectors.toList());
+
+        if (element.getElementsByTag("multicast").size() == 1) {
+            routingType = "multicast";
+        } else if (element.getElementsByTag("anycast").size() == 1) {
+            routingType = "anycast";
+        } else {
+            throw new IllegalArgumentException(String.format("Expected MQ address to be either 'multicast' or 'anycast', but %s is not", name));
+        }
+    }
 }

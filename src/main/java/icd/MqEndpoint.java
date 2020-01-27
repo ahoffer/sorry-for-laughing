@@ -1,20 +1,34 @@
 package icd;
 
+import org.apache.commons.lang3.Validate;
+
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.commons.lang3.Validate.*;
+
 public class MqEndpoint {
 
-  public Map<String, List<String>> getPermissions() {
-    return null;
-  }
+    private final MqAddress address;
+    private final MqSecuritySetting securitySetting;
 
-  public String getName() {
-    return null;
-  }
+    public MqEndpoint(MqAddress address, MqSecuritySetting securitySetting) {
+        notNull(address);
+        notNull(securitySetting);
+        this.address = address;
+        this.securitySetting = securitySetting;
+    }
+
+    public Map<String, List<String>> getPermissions() {
+        return null;
+    }
+
+    public String getName() {
+        return address.name;
+    }
 
 
-  public String getRoutingType() {
-    return null;
-  }
+    public String getRoutingType() {
+        return null;
+    }
 }

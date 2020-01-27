@@ -1,15 +1,15 @@
 package icd;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.jsoup.nodes.Document;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import org.jsoup.nodes.Document;
-import org.junit.Test;
 
+import static icd.MqConfigurationParsingTest.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.collection.IsMapContaining.hasKey;
 import static org.hamcrest.core.Is.is;
 
@@ -17,8 +17,8 @@ public class MqConfigurationComponentTest {
 
   @Test
   public void testFullConfiguration() throws IOException {
-    Document doc = MqConfigurationParsingTest.getResourceAsDocument("/artemis.xml");
-    MqConfiguration config = new MqConfiguration().parse(doc);
+    Document doc = getResourceAsDocument("/artemis.xml");
+    MqConfiguration config = new MqConfiguration(doc);
     assertThat(config.size(), is(2));
     MqEndpoint afdcgsEndpoint = config.get(0);
     assertThat(afdcgsEndpoint.getName(), is("afdcgs.geoint.chat.message.high"));

@@ -1,30 +1,36 @@
 package icd;
 
-import java.util.Arrays;
-import java.util.Optional;
+import org.jsoup.nodes.Comment;
+import org.jsoup.nodes.Node;
 
 public class DocumentationComment {
 
-  ;
+    public static DocumentationComment attemptToCreate(Node node) {
+        if (node instanceof Comment) {
+            String comment = ((Comment) node).getData();
+            return attemptToCreate(comment);
+        }
+        return null;
+    }
 
-  public static Optional<DocumentationComment> attemptToCreate(String comment) {
-    return Optional.ofNullable(
-        Arrays.stream(MagicToken.values())
-            .filter(token -> comment.startsWith(token.toString()))
-            .findAny()
-            .map(token -> new DocumentationComment(token, extractText(token, comment)))
-            .orElse(null));
-  }
+    static DocumentationComment attemptToCreate(String comment) {
+        for (MagicToken token : MagicToken.values()) {
+            if (comment.startsWith(token.toString())) {
+                return new DocumentationComment(token, extractDocumentation(token, comment));
+            }
+        }
+        return null;
+    }
 
-  static String extractText(MagicToken token, String comment) {
-    return comment.substring(token.toString().length() + 1).trim();
-  }
+    static String extractDocumentation(MagicToken token, String comment) {
+        return comment.substring(token.toString().length() + 1).trim();
+    }
 
-  MagicToken token;
-  String text;
+    final MagicToken token;
+    final String text;
 
-  public DocumentationComment(MagicToken token, String text) {
-    this.token = token;
-    this.text = text;
-  }
+    public DocumentationComment(MagicToken token, String text) {
+        this.token = token;
+        this.text = text;
+    }
 }
