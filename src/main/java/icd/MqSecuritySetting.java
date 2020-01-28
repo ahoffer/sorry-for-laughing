@@ -12,7 +12,7 @@ public class MqSecuritySetting {
     public static final int STARTING_SCORE = 0;
     public static final String MATCH_ONE_WORD = "*";
     protected String match;
-    protected Map<String, List<String>> typeToPermissions = new HashMap<>();
+    protected Map<String, List<String>> permissionToRoles = new HashMap<>();
 
     public MqSecuritySetting(Element element) {
         parse(element);
@@ -30,30 +30,20 @@ public class MqSecuritySetting {
     protected MqSecuritySetting() {
     }
 
-    public static MqSecuritySetting empty() {
-        return new MqSecuritySetting();
-    }
-
-    public MqSecuritySetting merge(MqSecuritySetting mqSecuritySetting) {
-        return null;
-    }
-
-    public MqSecuritySetting parse(Element element) {
+    public void parse(Element element) {
         match = element.attr("match");
         element.children().forEach(this::parsePermission);
-        return this;
     }
 
     protected void parsePermission(Element element) {
         if (!element.tagName().equals("permission")) return;
         String type = element.attr("type");
         String roles = element.attr("roles");
-        Arrays.asList(roles.split(","));
-        typeToPermissions.put(type, Arrays.asList(roles.split(",")));
+        permissionToRoles.put(type, Arrays.asList(roles.split(",")));
     }
 
     //TODO Add unit tests
-    public Integer score(String input) {
+     Integer score(String input) {
         String[] inputWords = getWords(input);
         String[] matchStringWords = getWords(match);
         int score = STARTING_SCORE;

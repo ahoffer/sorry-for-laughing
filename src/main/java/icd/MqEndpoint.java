@@ -1,7 +1,5 @@
 package icd;
 
-import org.apache.commons.lang3.Validate;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +20,7 @@ public class MqEndpoint {
     }
 
     public Map<String, List<String>> getPermissions() {
-        return new HashMap<>(securitySetting.typeToPermissions);
+        return new HashMap<>(securitySetting.permissionToRoles);
     }
 
     public String getName() {

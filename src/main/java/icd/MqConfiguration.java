@@ -11,9 +11,17 @@ import static java.util.Comparator.comparing;
 public class MqConfiguration {
 
     protected Set<MqEndpoint> endpoints = new HashSet<>();
+    protected Map<String, String> roleMappings = new HashMap<>();
 
-    public MqConfiguration(Document doc) {
-        parse(doc);
+    public MqConfiguration(Document document) {
+
+        document.getElementsByTag("address").stream().map(MqAddress::new).forEach(address -> {
+            //TODO: Test where there is not catch-all ("#") permission
+            MqSecuritySetting securitySetting = document.getElementsByTag("security-setting").stream()
+                    .map(MqSecuritySetting::new).reduce(noMatch(), (acc, next) ->
+                            acc.returnHigherScore(address.name, next));
+            endpoints.add(new MqEndpoint(address, securitySetting));
+        });
     }
 
     public List<MqEndpoint> getEndpoints() {
@@ -24,21 +32,13 @@ public class MqConfiguration {
         return endpoints.size();
     }
 
-    public void parse(org.jsoup.nodes.Document doc) {
-        Set<MqAddress> addresses =
-                doc.getElementsByTag("address").stream().map(MqAddress::new).collect(Collectors.toSet());
+    protected Set<MqSecuritySetting> createSecuritySettings(Document doc) {
+        return doc.getElementsByTag("security-setting").stream()
+                .map(MqSecuritySetting::new)
+                .collect(Collectors.toSet());
+    }
 
-        Set<MqSecuritySetting> security =
-                doc.getElementsByTag("security-setting").stream()
-                        .map(MqSecuritySetting::new)
-                        .collect(Collectors.toSet());
-
-        for (MqAddress address : addresses) {
-            String name = address.name;
-            MqSecuritySetting securitySetting = security.stream().reduce(noMatch(), (acc, next) ->
-                    acc.returnHigherScore(name, next));
-
-            endpoints.add(new MqEndpoint(address, securitySetting));
-        }
+    protected Set<MqAddress> createAddresses(Document doc) {
+        return doc.getElementsByTag("address").stream().map(MqAddress::new).collect(Collectors.toSet());
     }
 }
