@@ -15,17 +15,13 @@ public class MqAddress {
     File asciiDoctorTemplate;
     List<DocumentationComment> documentationComments = new ArrayList<>();
 
-    MqAddress(Element element) {
-        parse(element);
-    }
+    MqAddress(Element xmlAddress) {
+        name = xmlAddress.attr("name");
+        documentationComments = xmlAddress.childNodes().stream().map(DocumentationComment::attemptToCreate).filter(Objects::nonNull).collect(Collectors.toList());
 
-    void parse(Element element) {
-        name = element.attr("name");
-        documentationComments = element.childNodes().stream().map(DocumentationComment::attemptToCreate).filter(Objects::nonNull).collect(Collectors.toList());
-
-        if (element.getElementsByTag("multicast").size() == 1) {
+        if (xmlAddress.getElementsByTag("multicast").size() == 1) {
             routingType = "multicast";
-        } else if (element.getElementsByTag("anycast").size() == 1) {
+        } else if (xmlAddress.getElementsByTag("anycast").size() == 1) {
             routingType = "anycast";
         } else {
             throw new IllegalArgumentException(String.format("Expected MQ address to be either 'multicast' or 'anycast', but %s is not", name));

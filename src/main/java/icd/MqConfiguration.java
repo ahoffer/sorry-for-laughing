@@ -13,15 +13,8 @@ public class MqConfiguration {
     protected Set<MqEndpoint> endpoints = new HashSet<>();
     protected Map<String, String> roleMappings = new HashMap<>();
 
-    public MqConfiguration(Document document) {
-
-        document.getElementsByTag("address").stream().map(MqAddress::new).forEach(address -> {
-            //TODO: Test where there is not catch-all ("#") permission
-            MqSecuritySetting securitySetting = document.getElementsByTag("security-setting").stream()
-                    .map(MqSecuritySetting::new).reduce(noMatch(), (acc, next) ->
-                            acc.returnHigherScore(address.name, next));
-            endpoints.add(new MqEndpoint(address, securitySetting));
-        });
+    public MqConfiguration(Document doc) {
+        createEndpoints(createAddresses(doc), createSecuritySettings(doc));
     }
 
     public List<MqEndpoint> getEndpoints() {
@@ -32,7 +25,16 @@ public class MqConfiguration {
         return endpoints.size();
     }
 
-    protected Set<MqSecuritySetting> createSecuritySettings(Document doc) {
+    protected   void createEndpoints(Set<MqAddress> addresses, Set<MqSecuritySetting> security) {
+        for (MqAddress address : addresses) {
+            //TODO: Test where there is not catch-all ("#") permission
+            MqSecuritySetting securitySetting = security.stream().reduce(noMatch(), (acc, next) ->
+                    acc.returnHigherScore(address.name, next));
+            endpoints.add(new MqEndpoint(address, securitySetting));
+        }
+    }
+
+  protected    Set<MqSecuritySetting> createSecuritySettings(Document doc) {
         return doc.getElementsByTag("security-setting").stream()
                 .map(MqSecuritySetting::new)
                 .collect(Collectors.toSet());

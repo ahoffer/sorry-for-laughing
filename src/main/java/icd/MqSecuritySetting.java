@@ -14,8 +14,9 @@ public class MqSecuritySetting {
     protected String match;
     protected Map<String, List<String>> permissionToRoles = new HashMap<>();
 
-    public MqSecuritySetting(Element element) {
-        parse(element);
+    public MqSecuritySetting(Element securitySettingXml) {
+        match = securitySettingXml.attr("match");
+        securitySettingXml.children().forEach(this::parsePermission);
     }
 
     public static MqSecuritySetting noMatch() {
@@ -30,20 +31,16 @@ public class MqSecuritySetting {
     protected MqSecuritySetting() {
     }
 
-    public void parse(Element element) {
-        match = element.attr("match");
-        element.children().forEach(this::parsePermission);
-    }
-
-    protected void parsePermission(Element element) {
-        if (!element.tagName().equals("permission")) return;
-        String type = element.attr("type");
-        String roles = element.attr("roles");
+    protected void parsePermission(Element permissionXml) {
+        if (!permissionXml.tagName().equals("permission")) return;
+        String type = permissionXml.attr("type");
+        String roles = permissionXml.attr("roles");
         permissionToRoles.put(type, Arrays.asList(roles.split(",")));
     }
 
     //TODO Add unit tests
-     Integer score(String input) {
+    // The more exact the security setting "match string" matches the input, the higher the score.
+    Integer score(String input) {
         String[] inputWords = getWords(input);
         String[] matchStringWords = getWords(match);
         int score = STARTING_SCORE;
