@@ -2,23 +2,22 @@ package icd;
 
 import org.jsoup.nodes.Document;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static icd.MqSecuritySetting.*;
+import static java.util.Comparator.comparing;
 
 public class MqConfiguration {
 
-    List<MqEndpoint> endpoints = new ArrayList<>();
+    protected Set<MqEndpoint> endpoints = new HashSet<>();
 
     public MqConfiguration(Document doc) {
         parse(doc);
     }
 
-    public MqEndpoint get(int i) {
-        return endpoints.get(i);
+    public List<MqEndpoint> getEndpoints() {
+        return endpoints.stream().sorted(comparing(MqEndpoint::getName)).collect(Collectors.toList());
     }
 
     public int size() {
@@ -34,12 +33,12 @@ public class MqConfiguration {
                         .map(MqSecuritySetting::new)
                         .collect(Collectors.toSet());
 
-        for (MqAddress addr : addresses) {
-            String name = addr.name;
+        for (MqAddress address : addresses) {
+            String name = address.name;
             MqSecuritySetting securitySetting = security.stream().reduce(noMatch(), (acc, next) ->
                     acc.returnHigherScore(name, next));
 
-            endpoints.add(new MqEndpoint(addr, securitySetting));
+            endpoints.add(new MqEndpoint(address, securitySetting));
         }
     }
 }

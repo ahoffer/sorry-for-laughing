@@ -9,10 +9,8 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/ -->
-<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="urn:activemq"
-    xsi:schemaLocation="urn:activemq /schema/artemis-configuration.xsd">
-    <core xmlns="urn:activemq:core">
+<configuration>
+    <core>
         <name>artemis</name>
         <addresses>
             <address name="afdcgs.geoint.chat.message.high">
@@ -41,8 +39,8 @@
                 <permission type="notincluded" roles="dinner"/>
             </security-setting>
             <security-setting match="pulse.mission.information">
-                <permission type="createNonDurabflupleQueue" roles="addedrole"/>
-                <permission type="addedtype" roles="manager"/>
+                <permission type="thing1" roles="admin"/>
+                <permission type="thing2" roles="manager"/>
             </security-setting>
             <!--            TODO What is role mapping?-->
             <role-mapping from="ent SOA ESB Pulse Receiver" to="pulse-receiver"/>

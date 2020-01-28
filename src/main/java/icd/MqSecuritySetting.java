@@ -11,8 +11,8 @@ public class MqSecuritySetting {
     public static final String MATCH_REMAINING_WORDS = "#";
     public static final int STARTING_SCORE = 0;
     public static final String MATCH_ONE_WORD = "*";
-    String match;
-    Map<String, List<String>> typeToPermissions = new HashMap<>();
+    protected String match;
+    protected Map<String, List<String>> typeToPermissions = new HashMap<>();
 
     public MqSecuritySetting(Element element) {
         parse(element);
@@ -44,7 +44,7 @@ public class MqSecuritySetting {
         return this;
     }
 
-    void parsePermission(Element element) {
+    protected void parsePermission(Element element) {
         if (!element.tagName().equals("permission")) return;
         String type = element.attr("type");
         String roles = element.attr("roles");
@@ -83,7 +83,6 @@ public class MqSecuritySetting {
                 return NO_MATCH;
             }
         }
-
 
         // "pluse.msisino.info" matches "pulse.mission.info" with a score of 3
         return score;
