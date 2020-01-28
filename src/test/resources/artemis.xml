@@ -24,7 +24,7 @@
             </address>
         </addresses>
 
-        <!--        For testing, add some elements that should not be part of the output-->
+        <!--For testing, add some elements that should not be part of the output-->
         <persistence-enabled>true</persistence-enabled>
         <network-check-timeout>255</network-check-timeout>
 

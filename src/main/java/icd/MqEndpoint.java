@@ -2,6 +2,7 @@ package icd;
 
 import org.apache.commons.lang3.Validate;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,5 +31,9 @@ public class MqEndpoint {
 
     public String getRoutingType() {
         return address.routingType;
+    }
+
+    public List<DocumentationComment> getDocumentation() {
+        return new ArrayList<>(address.documentationComments);
     }
 }

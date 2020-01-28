@@ -10,6 +10,7 @@ import java.util.Map;
 import static icd.MqConfigurationParsingTest.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.collection.IsMapContaining.hasKey;
 import static org.hamcrest.core.Is.is;
 
@@ -24,6 +25,7 @@ public class MqConfigurationComponentTest {
         MqEndpoint afdcgsEndpoint = endpoints.get(0);
         assertThat(afdcgsEndpoint.getName(), is("afdcgs.geoint.chat.message.high"));
         assertThat(afdcgsEndpoint.getRoutingType(), is("multicast"));
+        assertThat(afdcgsEndpoint.getDocumentation(), hasSize(1));
         Map<String, List<String>> permissions = afdcgsEndpoint.getPermissions();
         assertThat(permissions.size(), is(1));
         assertThat(permissions, hasKey("createNonDurableQueue"));
