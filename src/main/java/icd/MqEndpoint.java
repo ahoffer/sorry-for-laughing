@@ -20,7 +20,7 @@ public class MqEndpoint {
     }
 
     public Map<String, List<String>> getPermissions() {
-        return new HashMap<>(securitySetting.permissionToRoles);
+        return new HashMap<>(securitySetting.permissionToInternalRoles);
     }
 
     public String getName() {

@@ -34,7 +34,7 @@ public class MqConfigurationParsingTest {
         Element e = getResourceAsDocument("/security.xml").getElementsByTag("security-setting").first();
         MqSecuritySetting mqSecuritySettings = new MqSecuritySetting(e);
         assertThat(mqSecuritySettings.match, is("input.#"));
-        Map<String, List<String>> permissions = mqSecuritySettings.permissionToRoles;
+        Map<String, List<String>> permissions = mqSecuritySettings.permissionToInternalRoles;
         assertThat(permissions.size(), is(1));
         assertThat(permissions, IsMapContaining.hasKey(("type")));
         assertThat(permissions.get("type"), containsInAnyOrder("one", "two", "three"));
