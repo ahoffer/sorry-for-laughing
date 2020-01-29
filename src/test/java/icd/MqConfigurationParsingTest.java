@@ -59,7 +59,7 @@ public class MqConfigurationParsingTest {
 
     static String getResourceAsString(String filename) throws IOException {
         return IOUtils.toString(
-                new File(MqConfigurationComponentTest.class.getResource(filename).getFile()).toURI());
+                new File(MqConfigurationComponentTest.class.getResource(filename).getFile()).toURI(), "UTF-8");
     }
 
     static Document getResourceAsDocument(String filename) throws IOException {
