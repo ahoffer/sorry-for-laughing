@@ -49,13 +49,13 @@
             <role-mapping from="ent SOA ESB Sender" to="manager"/>
             <role-mapping from="ent SOA ESB Receiver" to="manager"/>
             <security-setting match="#">
-                <permission roles="nonDurable" type="createNonDurableQueue"/>
+                <permission roles="analyst" type="createNonDurableQueue"/>
             </security-setting>
             <security-setting match="pulse.#">
                 <permission roles="manager, tester" type="deleteDurableQueue"/>
             </security-setting>
             <security-setting match="uci.v711.#">
-                <permission roles="dinner" type="notincluded"/>
+                <permission roles="dinner" type="deleteTopic"/>
             </security-setting>
             <security-setting match="pulse.mission.information">
                 <permission roles="admin" type="thing1"/>

@@ -37,7 +37,7 @@ public class MqEndpointFactoryComponentTest {
         assertThat(afdcgsInternalPermissions.size(), is(1));
         assertThat(afdcgsInternalPermissions, hasKey("createNonDurableQueue"));
         assertThat(afdcgsInternalPermissions.get("createNonDurableQueue"),
-            containsInAnyOrder("nonDurable"));
+            containsInAnyOrder("analyst"));
 
         // Verify second endpoint
         MqEndpoint pulseEndpoint = endpoints.get(1);
@@ -55,5 +55,11 @@ public class MqEndpointFactoryComponentTest {
         assertThat(pulseLdapPermissions, hasKey("thing2"));
         assertThat(pulseLdapPermissions.get("thing2"),
             contains("ent SOA ESB Receiver", "ent SOA ESB Sender"));
+
+
+        endpoints.forEach(e-> e.debugPrintOn(System.out));
     }
+
+
+
 }

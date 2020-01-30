@@ -1,5 +1,7 @@
 package icd;
 
+import java.io.PrintStream;
+
 public class MqDocumentationComment {
 
     /**
@@ -16,4 +18,7 @@ public class MqDocumentationComment {
     }
 
 
+    public void debugPrintOn(PrintStream printStream, String indent) {
+        printStream.println(indent + token + ":" + text);
+    }
 }

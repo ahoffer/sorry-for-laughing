@@ -2,6 +2,7 @@ package icd;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,5 +53,18 @@ public class MqEndpoint {
 
     public List<MqDocumentationComment> getDocumentation() {
         return new ArrayList<>(address.getDocumentationComments());
+    }
+
+    void debugPrintOn(PrintStream printStream) {
+        debugPrintOn(printStream, "");
+    }
+
+    void debugPrintOn(PrintStream printStream, String indent) {
+        printStream.println(indent + getName());
+        printStream.println(indent + "\t" + getRoutingType());
+        getDocumentation().forEach(c -> c.debugPrintOn(printStream, indent + "\t"));
+        securitySetting.debugPrintOn(printStream, indent + "\t");
+        //Print blank line
+        printStream.println();
     }
 }
