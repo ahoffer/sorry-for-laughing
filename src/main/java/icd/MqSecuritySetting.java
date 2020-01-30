@@ -7,23 +7,54 @@ import org.jsoup.nodes.Element;
 
 import java.util.*;
 
+/**
+ * This class is part of the Interface Control Document (ICD) generation component. It models the
+ * permissions and roles associated with a particular endpoint. It includes the names of the
+ * "internal" roles defined as part of the security-settings in the MQ configuration files, as well
+ * as the LDAP roles defined in the role-mapping section of the MQ configuration file.
+ * <p>
+ * Internal to the class is the logic to match an endpoint name with the most specific
+ * security-settings that match the endpoint name.
+ */
 public class MqSecuritySetting {
 
-    public static final char WORD_BREAK = '.';
-    public static final int NO_MATCH = -1;
-    public static final String MATCH_REMAINING_WORDS = "#";
-    public static final int STARTING_SCORE = 0;
-    public static final String MATCH_ONE_WORD = "*";
-    protected String match;
-    protected Map<String, List<String>> permissionToInternalRoles = new HashMap<>();
-    protected Map<String, List<String>> permissionToLdapRoles = new HashMap<>();
-    static MultiValuedMap<String, String> internalRoleToLdapRoles = new ArrayListValuedHashMap<>();
+    static final char WORD_BREAK = '.';
+    static final int NO_MATCH = -1;
+    static final String MATCH_REMAINING_WORDS = "#";
+    static final int STARTING_SCORE = 0;
+    static final String MATCH_ONE_WORD = "*";
 
-    public MqSecuritySetting(Element securitySettingXml) {
-        match = securitySettingXml.attr("match");
-        securitySettingXml.children().forEach(this::parsePermission);
+    // The "match string" represents the string literals, wild-cards, and word-delimiters
+    // associated with the security-settings.
+    // Some examples include "pulse.mission.information", "pulse.#", and "#".
+    protected String match = "";
+
+    // This field maps permissions like "createNonDurableQueue" to the internal roles that may
+    // perform that action, such as "manager" or "broker-client".
+    // Roles are always in lexical order.
+    //TODO Replace with multimap?
+    protected Map<String, List<String>> permissionToInternalRoles = new HashMap<>();
+
+    // Maps permission to LDAP roles. LDAP roles are important to the client application-- the
+    // internal roles are not important to them. NOTE that a single internal role may be aliased
+    // to multiple LDAP roles. For example, both LDAP roles "ent SOA ESB Sender"
+    // and "ent SOA ESB Receiver" map to the internal role "manager".
+    // Roles are always in lexical order.
+    //TODO Replace with multimap?
+    protected Map<String, List<String>> permissionToLdapRoles = new HashMap<>();
+
+    public MqSecuritySetting(String match, Map<String, List<String>> permissionToInternalRoles,
+        Map<String, List<String>> permissionToLdapRoles) {
+        this.match = match;
+        this.permissionToInternalRoles = permissionToInternalRoles;
+        this.permissionToLdapRoles = permissionToLdapRoles;
     }
 
+    /**
+     * This constructor creates an object guaranteed to never match the name of any endpoint
+     *
+     * @return A security object that never matches any queue or topic.
+     */
     public static MqSecuritySetting noMatch() {
         return new MqSecuritySetting() {
             @Override
@@ -36,29 +67,8 @@ public class MqSecuritySetting {
     protected MqSecuritySetting() {
     }
 
-    protected void parsePermission(Element permissionXml) {
-        if (!permissionXml.tagName().equals("permission")) {
-            return;
-        }
-        String permission = permissionXml.attr("type");
-        String roles = permissionXml.attr("roles");
-        List<String> internalRoles = new ArrayList<>();
-        List<String> ldapRoles = new ArrayList<>();
-        for (String internalRole : roles.split(",")) {
-            internalRoles.add(internalRole);
-            ldapRoles.addAll(matchingLdapRoles(internalRole));
-        }
-        Collections.sort(internalRoles);
-        Collections.sort(ldapRoles);
-        permissionToInternalRoles.put(permission, internalRoles);
-        permissionToLdapRoles.put(permission, ldapRoles);
-    }
-
-    protected Collection<String> matchingLdapRoles(String internalRole) {
-        return internalRoleToLdapRoles.get(internalRole);
-    }
-
     // TODO Add unit tests
+    // TODO: Add all this lexing/matching stuff to a new class? Move to inner class?
     // The more exact the security setting "match string" matches the input, the higher the score.
     Integer score(String input) {
         String[] inputWords = getWords(input);
@@ -116,7 +126,19 @@ public class MqSecuritySetting {
         return words.toArray(new String[words.size()]);
     }
 
+    /**
+     * Return the security object with the higher score -- either this security object or the one in
+     * the parameters. Makes sorting easier.
+     *
+     * @param input
+     * @param o
+     * @return
+     */
     public MqSecuritySetting returnHigherScore(String input, MqSecuritySetting o) {
         return o.score(input) > score(input) ? o : this;
     }
+
+
+
+
 }
