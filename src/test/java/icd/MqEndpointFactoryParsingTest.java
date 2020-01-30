@@ -20,13 +20,23 @@ import org.junit.Test;
 
 public class MqEndpointFactoryParsingTest {
 
+    static String getResourceAsString(String filename) throws IOException {
+        return IOUtils.toString(
+            new File(MqEndpointFactoryComponentTest.class.getResource(filename).getFile()).toURI(),
+            StandardCharsets.UTF_8);
+    }
+
+    static Document getResourceAsDocument(String filename) throws IOException {
+        return Jsoup.parse(getResourceAsString(filename));
+    }
+
     @Test
     public void testAddress() throws IOException {
         Element e = getResourceAsDocument("/address.xml").getElementsByTag("address").first();
         MqAddress addr = new MqAddress(e);
-        assertThat(addr.name, is("qname"));
-        assertThat(addr.routingType, is("anycast"));
-        assertThat(addr.documentationComments.size(), is(1));
+        assertThat(addr.getName(), is("qname"));
+        assertThat(addr.getRoutingType(), is("anycast"));
+        assertThat(addr.getDocumentationComments().size(), is(1));
     }
 
     @Test
@@ -56,15 +66,5 @@ public class MqEndpointFactoryParsingTest {
         MqDocumentationComment dc = MqDocumentationCommentFactory
             .create("UNRECOGNIZED: I am not a teapot");
         assertThat(dc, nullValue());
-    }
-
-    static String getResourceAsString(String filename) throws IOException {
-        return IOUtils.toString(
-            new File(MqEndpointFactoryComponentTest.class.getResource(filename).getFile()).toURI(),
-            StandardCharsets.UTF_8);
-    }
-
-    static Document getResourceAsDocument(String filename) throws IOException {
-        return Jsoup.parse(getResourceAsString(filename));
     }
 }

@@ -2,7 +2,6 @@ package icd;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +32,7 @@ public class MqSecuritySettingFactory {
         document.getElementsByTag("role-mapping").stream().forEach(rolemapXml ->
             internalRoleToLdapRoles.put(rolemapXml.attr("to"), rolemapXml.attr("from")));
 
-        if(internalRoleToLdapRoles.isEmpty()) {
+        if (internalRoleToLdapRoles.isEmpty()) {
             //TODO Log a warning that there are no role mappings
         }
     }
@@ -73,7 +72,6 @@ public class MqSecuritySettingFactory {
             permissionToInternalRoles,
             permissionToLdapRoles);
     }
-
 
 
     private String getPermissionName(Element permissionXml) {

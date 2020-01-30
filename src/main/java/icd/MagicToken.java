@@ -1,6 +1,6 @@
 package icd;
 
 public enum MagicToken {
-  DESCRIPTION,
-  REFERENCE
+    DESCRIPTION,
+    REFERENCE
 }

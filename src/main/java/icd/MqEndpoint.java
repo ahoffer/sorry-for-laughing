@@ -1,11 +1,11 @@
 package icd;
 
+import static org.apache.commons.lang3.Validate.notNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.apache.commons.lang3.Validate.*;
 
 
 /**
@@ -43,14 +43,14 @@ public class MqEndpoint {
     }
 
     public String getName() {
-        return address.name;
+        return address.getName();
     }
 
     public String getRoutingType() {
-        return address.routingType;
+        return address.getRoutingType();
     }
 
     public List<MqDocumentationComment> getDocumentation() {
-        return new ArrayList<>(address.documentationComments);
+        return new ArrayList<>(address.getDocumentationComments());
     }
 }

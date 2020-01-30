@@ -1,8 +1,5 @@
 package icd;
 
-import org.jsoup.nodes.Comment;
-import org.jsoup.nodes.Node;
-
 public class MqDocumentationComment {
 
     /**

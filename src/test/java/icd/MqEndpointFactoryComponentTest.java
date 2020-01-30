@@ -2,6 +2,7 @@ package icd;
 
 import static icd.MqEndpointFactoryParsingTest.getResourceAsDocument;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
@@ -42,12 +43,17 @@ public class MqEndpointFactoryComponentTest {
         MqEndpoint pulseEndpoint = endpoints.get(1);
         assertThat(pulseEndpoint.getName(), is("pulse.mission.information"));
         assertThat(pulseEndpoint.getRoutingType(), is("anycast"));
-        Map<String, List<String>> pulsePermissions = pulseEndpoint.getPermissions();
-        assertThat(pulsePermissions.size(), is(2));
-        assertThat(pulsePermissions, hasKey("thing1"));
-        assertThat(pulsePermissions, hasKey("thing2"));
+        Map<String, List<String>> pulseInternalPermissions = pulseEndpoint.securitySetting.permissionToInternalRoles;
+        assertThat(pulseInternalPermissions.size(), is(2));
+        assertThat(pulseInternalPermissions, hasKey("thing1"));
+        assertThat(pulseInternalPermissions, hasKey("thing2"));
         assertThat(
-            pulsePermissions.get("thing1"), containsInAnyOrder("admin"));
-        assertThat(pulsePermissions.get("thing2"), containsInAnyOrder("manager"));
+            pulseInternalPermissions.get("thing1"), containsInAnyOrder("admin"));
+        assertThat(pulseInternalPermissions.get("thing2"), containsInAnyOrder("manager"));
+        Map<String, List<String>> pulseLdapPermissions = pulseEndpoint.getPermissions();
+        assertThat(pulseLdapPermissions.size(), is(1));
+        assertThat(pulseLdapPermissions, hasKey("thing2"));
+        assertThat(pulseLdapPermissions.get("thing2"),
+            contains("ent SOA ESB Receiver", "ent SOA ESB Sender"));
     }
 }

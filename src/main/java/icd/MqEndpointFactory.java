@@ -1,10 +1,13 @@
 package icd;
 
-import org.jsoup.nodes.Document;
-import java.util.*;
+import static icd.MqSecuritySetting.noMatch;
+import static java.util.stream.Collectors.toList;
 
-import static icd.MqSecuritySetting.*;
-import static java.util.stream.Collectors.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import org.jsoup.nodes.Document;
 
 /**
  * This class is part of the Interface Control Document (ICD) generation component. It models the an
@@ -38,14 +41,16 @@ public class MqEndpointFactory {
             // TODO: Test where there is not catch-all ("#") permission
             MqSecuritySetting securitySetting =
                 securitySettings.stream()
-                    .reduce(noMatch(), (acc, next) -> acc.returnHigherScore(address.name, next));
+                    .reduce(noMatch(),
+                        (acc, next) -> acc.returnHigherScore(address.getName(), next));
             endpoints.add(new MqEndpoint(address, securitySetting));
         }
         return endpoints;
     }
 
     protected List<MqAddress> addressFactory(Document doc) {
-        return doc.getElementsByTag("address").stream().sorted().map(MqAddress::new)
+        return doc.getElementsByTag("address").stream().map(MqAddress::new)
+            .sorted(Comparator.comparing(MqAddress::getName))
             .collect(toList());
     }
 }

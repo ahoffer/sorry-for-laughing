@@ -1,11 +1,9 @@
 package icd;
 
-import java.util.stream.Collectors;
-import org.apache.commons.collections4.MultiValuedMap;
-import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
-import org.jsoup.nodes.Element;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class is part of the Interface Control Document (ICD) generation component. It models the
@@ -27,13 +25,13 @@ public class MqSecuritySetting {
     // The "match string" represents the string literals, wild-cards, and word-delimiters
     // associated with the security-settings.
     // Some examples include "pulse.mission.information", "pulse.#", and "#".
-    protected String match = "";
+    String match = "";
 
     // This field maps permissions like "createNonDurableQueue" to the internal roles that may
     // perform that action, such as "manager" or "broker-client".
     // Roles are always in lexical order.
     //TODO Replace with multimap?
-    protected Map<String, List<String>> permissionToInternalRoles = new HashMap<>();
+    Map<String, List<String>> permissionToInternalRoles = new HashMap<>();
 
     // Maps permission to LDAP roles. LDAP roles are important to the client application-- the
     // internal roles are not important to them. NOTE that a single internal role may be aliased
@@ -41,13 +39,16 @@ public class MqSecuritySetting {
     // and "ent SOA ESB Receiver" map to the internal role "manager".
     // Roles are always in lexical order.
     //TODO Replace with multimap?
-    protected Map<String, List<String>> permissionToLdapRoles = new HashMap<>();
+    Map<String, List<String>> permissionToLdapRoles = new HashMap<>();
 
     public MqSecuritySetting(String match, Map<String, List<String>> permissionToInternalRoles,
         Map<String, List<String>> permissionToLdapRoles) {
         this.match = match;
         this.permissionToInternalRoles = permissionToInternalRoles;
         this.permissionToLdapRoles = permissionToLdapRoles;
+    }
+
+    protected MqSecuritySetting() {
     }
 
     /**
@@ -62,9 +63,6 @@ public class MqSecuritySetting {
                 return NO_MATCH;
             }
         };
-    }
-
-    protected MqSecuritySetting() {
     }
 
     // TODO Add unit tests
@@ -137,8 +135,6 @@ public class MqSecuritySetting {
     public MqSecuritySetting returnHigherScore(String input, MqSecuritySetting o) {
         return o.score(input) > score(input) ? o : this;
     }
-
-
 
 
 }

@@ -11,7 +11,6 @@
  **/ -->
 <configuration>
     <core>
-        <name>artemis</name>
         <addresses>
             <address name="afdcgs.geoint.chat.message.high">
                 <!--DESCRIPTION: Good vibes-->
@@ -23,30 +22,18 @@
                 </anycast>
             </address>
         </addresses>
+        <name>artemis</name>
 
         <!--For testing, add some elements that should not be part of the output-->
-        <persistence-enabled>true</persistence-enabled>
         <network-check-timeout>255</network-check-timeout>
+        <persistence-enabled>true</persistence-enabled>
 
         <security-settings>
-            <security-setting match="#">
-                <permission type="createNonDurableQueue" roles="nonDurable"/>
-            </security-setting>
-            <security-setting match="pulse.#">
-                <permission type="deleteDurableQueue" roles="manager, tester"/>
-            </security-setting>
-            <security-setting match="uci.v711.#">
-                <permission type="notincluded" roles="dinner"/>
-            </security-setting>
-            <security-setting match="pulse.mission.information">
-                <permission type="thing1" roles="admin"/>
-                <permission type="thing2" roles="manager"/>
-            </security-setting>
-            <!--            TODO What is role mapping?-->
             <role-mapping from="ent SOA ESB Pulse Receiver" to="pulse-receiver"/>
             <role-mapping from="ent SOA ESB UCI Health and Status Receiver" to="uci-hs-receiver"/>
             <role-mapping from="ent SOA ESB Raw Health and Status Receiver" to="raw-hs-receiver"/>
             <role-mapping from="ent SOA ESB C2 Sender" to="c2-sender"/>
+            <!--            TODO What is role mapping?-->
             <role-mapping from="ent SOA ESB C2 Receiver" to="c2-receiver"/>
             <role-mapping from="ent SOA ESB Channel Status Receiver" to="channel-status-receiver"/>
             <role-mapping from="ent SOA ESB PNCSA Sender" to="pncsa-sender"/>
@@ -61,6 +48,19 @@
             <role-mapping from="ent SOA ESB Img Notification Sender" to="img-notification-sender"/>
             <role-mapping from="ent SOA ESB Sender" to="manager"/>
             <role-mapping from="ent SOA ESB Receiver" to="manager"/>
+            <security-setting match="#">
+                <permission roles="nonDurable" type="createNonDurableQueue"/>
+            </security-setting>
+            <security-setting match="pulse.#">
+                <permission roles="manager, tester" type="deleteDurableQueue"/>
+            </security-setting>
+            <security-setting match="uci.v711.#">
+                <permission roles="dinner" type="notincluded"/>
+            </security-setting>
+            <security-setting match="pulse.mission.information">
+                <permission roles="admin" type="thing1"/>
+                <permission roles="manager" type="thing2"/>
+            </security-setting>
         </security-settings>
     </core>
 </configuration>

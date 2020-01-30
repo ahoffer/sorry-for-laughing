@@ -1,12 +1,7 @@
 package icd;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 import org.jsoup.nodes.Element;
 
 public class MqAddress {
@@ -30,9 +25,20 @@ public class MqAddress {
         } else {
             throw new IllegalArgumentException(String
                 .format("Expected MQ address to be either 'multicast' or 'anycast', but %s is not",
-                    name));
+                    getName()));
         }
     }
 
 
+    public String getRoutingType() {
+        return routingType;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Collection<MqDocumentationComment> getDocumentationComments() {
+        return documentationComments;
+    }
 }
