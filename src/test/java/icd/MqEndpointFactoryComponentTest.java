@@ -1,6 +1,7 @@
 package icd;
 
 import static icd.MqEndpointFactoryParsingTest.getResourceAsDocument;
+import static icd.MqEndpointFactoryParsingTest.getResourceFile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -19,8 +20,7 @@ public class MqEndpointFactoryComponentTest {
 
     @Test
     public void testFullConfiguration() throws IOException {
-        Document doc = getResourceAsDocument("/artemis.xml");
-        List<MqEndpoint> endpoints = new MqEndpointFactory(doc).getAllEndpoints();
+        List<MqEndpoint> endpoints = new MqEndpointFactory(getResourceFile("/artemis.xml")).getAllEndpoints();
         assertThat(endpoints.size(), is(2));
 
         //Verify first endpoint
@@ -55,11 +55,14 @@ public class MqEndpointFactoryComponentTest {
         assertThat(pulseLdapPermissions, hasKey("thing2"));
         assertThat(pulseLdapPermissions.get("thing2"),
             contains("ent SOA ESB Receiver", "ent SOA ESB Sender"));
-
-
         endpoints.forEach(e-> e.debugPrintOn(System.out));
     }
 
-
+@Test
+    public void processBrokerFile() throws IOException {
+    List<MqEndpoint> endpoints = new MqEndpointFactory(getResourceFile("/broker.xml.epp"))
+        .getAllEndpoints();
+    endpoints.forEach(e-> e.debugPrintOn(System.out));
+}
 
 }

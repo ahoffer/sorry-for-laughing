@@ -8,6 +8,7 @@ import static org.hamcrest.core.Is.is;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +23,12 @@ public class MqEndpointFactoryParsingTest {
 
     static String getResourceAsString(String filename) throws IOException {
         return IOUtils.toString(
-            new File(MqEndpointFactoryComponentTest.class.getResource(filename).getFile()).toURI(),
+            getResourceFile(filename).toURI(),
             StandardCharsets.UTF_8);
+    }
+
+     static File getResourceFile(String filename) {
+        return new File(MqEndpointFactoryComponentTest.class.getResource(filename).getFile());
     }
 
     static Document getResourceAsDocument(String filename) throws IOException {

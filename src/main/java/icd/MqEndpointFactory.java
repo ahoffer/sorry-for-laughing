@@ -3,10 +3,13 @@ package icd;
 import static icd.MqSecuritySetting.noMatch;
 import static java.util.stream.Collectors.toList;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 /**
@@ -24,6 +27,11 @@ public class MqEndpointFactory {
     public MqEndpointFactory(Document document) {
         this.document = document;
     }
+
+    public MqEndpointFactory(File file) throws IOException {
+        this(Jsoup.parse(file, "UTF-8"));
+    }
+
 
     /**
      * Return a list of lexically sorted MQ endpoints.
