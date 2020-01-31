@@ -14,6 +14,8 @@
   <core xmlns="urn:activemq:core">
     <addresses>
       <address name="DLQ">
+      <!-- DESCRIPTION: I am a descriptive comment -->
+      <!--REFERENCE: I am a different kind of comment-->
         <anycast>
           <queue name="DLQ"/>
         </anycast>

@@ -137,15 +137,24 @@ public class MqSecuritySetting {
         return o.score(input) > score(input) ? o : this;
     }
 
-    void debugPrintOn(PrintStream printStream, String indent) {
-        printStream.println(indent + "Match with security setting '" + match + "'");
-        printStream.println(indent + "\tLDAP");
-        permissionToLdapRoles.forEach((k, v) -> {
-            printStream.println(indent + "\t\t" + k + ":" + String.join(",", v));
-        });
-        printStream.println(indent + "\tInternal");
-        permissionToInternalRoles.forEach((k, v) -> {
-            printStream.println(indent + "\t\t" + k + ":" + String.join(",", v));
-        });
+    void debugPrintOn(PrintStream printStream, String parentIndent) {
+        printStream.println(parentIndent + "Security: match with security setting '" + match + "'");
+        printStream.println(parentIndent + "\tLDAP Roles and Permissions:");
+        if (permissionToInternalRoles.isEmpty()) {
+            printStream.println(parentIndent + "\t\t" + "NONE");
+        } else {
+            permissionToLdapRoles.forEach((k, v) -> {
+                printStream.println(parentIndent + "\t\t" + k + ":" + String.join(",", v));
+            });
+        }
+
+        printStream.println(parentIndent + "\tInternal Roles and Permission:");
+        if (permissionToInternalRoles.isEmpty()) {
+            printStream.println(parentIndent + "\t\t" + "NONE");
+        } else {
+            permissionToInternalRoles.forEach((k, v) -> {
+                printStream.println(parentIndent + "\t\t" + k + ":" + String.join(",", v));
+            });
+        }
     }
 }

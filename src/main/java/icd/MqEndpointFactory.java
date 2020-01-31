@@ -7,10 +7,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 /**
  * This class is part of the Interface Control Document (ICD) generation component. It models the an
@@ -45,20 +46,25 @@ public class MqEndpointFactory {
 
     protected List<MqEndpoint> createEndpoints() {
         List<MqEndpoint> endpoints = new ArrayList<>();
-        for (MqAddress address : addresses) {
-            // TODO: Test where there is not catch-all ("#") permission
+        // TODO: Test where there is not catch-all ("#") permission
+        addresses.forEach(address -> {
             MqSecuritySetting securitySetting =
                 securitySettings.stream()
                     .reduce(noMatch(),
                         (acc, next) -> acc.returnHigherScore(address.getName(), next));
             endpoints.add(new MqEndpoint(address, securitySetting));
-        }
+        });
+
+        Collections.sort(endpoints);
         return endpoints;
     }
 
-    protected List<MqAddress> addressFactory(Document doc) {
-        return doc.getElementsByTag("address").stream().map(MqAddress::new)
-            .sorted(Comparator.comparing(MqAddress::getName))
+    protected List<MqAddress> addressFactory(Document document) {
+
+        Elements endpointAddresses = document.getElementsByTag("addresses").first()
+            .getElementsByTag("address");
+
+        return endpointAddresses.stream().map(MqAddress::new)
             .collect(toList());
     }
 }

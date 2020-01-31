@@ -22,6 +22,11 @@
                 </anycast>
             </address>
         </addresses>
+
+        <!-- Don't blindly grab all elements with the tag "address"-->
+        <grouping-handler name="broker-grouping-handler">
+            <address>jms</address>
+        </grouping-handler>
         <name>artemis</name>
 
         <!--For testing, add some elements that should not be part of the output-->

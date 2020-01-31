@@ -14,7 +14,7 @@ import java.util.Map;
  * Artemis endpoint. It includes the endpoint's name, routing type (any/multi cast), permissions,
  * and documentation comments.
  */
-public class MqEndpoint {
+public class MqEndpoint implements Comparable<MqEndpoint> {
 
     protected final MqAddress address;
     protected final MqSecuritySetting securitySetting;
@@ -59,12 +59,26 @@ public class MqEndpoint {
         debugPrintOn(printStream, "");
     }
 
-    void debugPrintOn(PrintStream printStream, String indent) {
-        printStream.println(indent + getName());
-        printStream.println(indent + "\t" + getRoutingType());
-        getDocumentation().forEach(c -> c.debugPrintOn(printStream, indent + "\t"));
-        securitySetting.debugPrintOn(printStream, indent + "\t");
+    void debugPrintOn(PrintStream printStream, String parentIndex) {
+        String plusOneIndent = parentIndex + "\t";
+
+        printStream.println(parentIndex + "Name: " + getName());
+        printStream.println(plusOneIndent + "Routing type: " + getRoutingType());
+        printStream.println(plusOneIndent+ "Documentation:");
+        if (getDocumentation().isEmpty()) {
+            printStream.println(plusOneIndent + "\tNONE");
+        } else {
+            getDocumentation().forEach(c -> c.debugPrintOn(printStream, plusOneIndent + "\t"));
+        }
+
+        securitySetting.debugPrintOn(printStream, parentIndex + "\t");
+
         //Print blank line
         printStream.println();
+    }
+
+    @Override
+    public int compareTo(MqEndpoint o) {
+        return this.getName().compareToIgnoreCase(o.getName());
     }
 }

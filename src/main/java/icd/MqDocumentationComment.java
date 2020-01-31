@@ -18,7 +18,8 @@ public class MqDocumentationComment {
     }
 
 
-    public void debugPrintOn(PrintStream printStream, String indent) {
-        printStream.println(indent + token + ":" + text);
+    public void debugPrintOn(PrintStream printStream, String parentIndex) {
+        String myIndent = parentIndex + "\t";
+        printStream.println(myIndent + token + ":" + text);
     }
 }
