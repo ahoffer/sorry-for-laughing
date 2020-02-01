@@ -148,13 +148,13 @@ public class MqSecuritySetting {
             });
         }
 
-        printStream.println(parentIndent + "\tInternal Roles and Permission:");
-        if (permissionToInternalRoles.isEmpty()) {
-            printStream.println(parentIndent + "\t\t" + "NONE");
-        } else {
-            permissionToInternalRoles.forEach((k, v) -> {
-                printStream.println(parentIndent + "\t\t" + k + ":" + String.join(",", v));
-            });
-        }
+//        printStream.println(parentIndent + "\tInternal Roles and Permission:");
+//        if (permissionToInternalRoles.isEmpty()) {
+//            printStream.println(parentIndent + "\t\t" + "NONE");
+//        } else {
+//            permissionToInternalRoles.forEach((k, v) -> {
+//                printStream.println(parentIndent + "\t\t" + k + ":" + String.join(",", v));
+//            });
+//        }
     }
 }

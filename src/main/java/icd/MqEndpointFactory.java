@@ -44,7 +44,7 @@ public class MqEndpointFactory {
         return createEndpoints();
     }
 
-    protected List<MqEndpoint> createEndpoints() {
+    List<MqEndpoint> createEndpoints() {
         List<MqEndpoint> endpoints = new ArrayList<>();
         // TODO: Test where there is not catch-all ("#") permission
         addresses.forEach(address -> {
@@ -59,7 +59,7 @@ public class MqEndpointFactory {
         return endpoints;
     }
 
-    protected List<MqAddress> addressFactory(Document document) {
+    List<MqAddress> addressFactory(Document document) {
 
         Elements endpointAddresses = document.getElementsByTag("addresses").first()
             .getElementsByTag("address");

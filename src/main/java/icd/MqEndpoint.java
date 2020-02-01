@@ -64,11 +64,11 @@ public class MqEndpoint implements Comparable<MqEndpoint> {
 
         printStream.println(parentIndex + "Name: " + getName());
         printStream.println(plusOneIndent + "Routing type: " + getRoutingType());
-        printStream.println(plusOneIndent+ "Documentation:");
+        printStream.println(plusOneIndent + "Documentation:");
         if (getDocumentation().isEmpty()) {
             printStream.println(plusOneIndent + "\tNONE");
         } else {
-            getDocumentation().forEach(c -> c.debugPrintOn(printStream, plusOneIndent + "\t"));
+            getDocumentation().forEach(c -> c.debugPrintOn(printStream, plusOneIndent));
         }
 
         securitySetting.debugPrintOn(printStream, parentIndex + "\t");

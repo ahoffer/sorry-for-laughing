@@ -51,7 +51,8 @@ public class MqDocumentationCommentFactory {
      * @param comment
      * @return
      */
-    public static MqDocumentationComment create(String comment) {
+    static MqDocumentationComment create(String comment) {
+        comment = comment.trim();
         for (MagicToken token : MagicToken.values()) {
             if (comment.startsWith(token.toString())) {
                 return new MqDocumentationComment(token, extractDocumentation(token, comment));
@@ -63,7 +64,6 @@ public class MqDocumentationCommentFactory {
     static String extractDocumentation(MagicToken token, String comment) {
         return comment.substring(token.toString().length() + 1).trim();
     }
-
 
     public List<MqDocumentationComment> getAllDocumentation() {
         return parentXml.childNodes().stream().map(MqDocumentationCommentFactory::create)
