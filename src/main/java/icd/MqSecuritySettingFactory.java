@@ -94,9 +94,7 @@ public class MqSecuritySettingFactory {
     List<String> getLdapRoles(List<String> internalRoles) {
         //TODO: This can probably be replaced by a stream that uses flatMap
         List<String> ldapRoles = new ArrayList<>();
-        internalRoles.forEach(role -> {
-            ldapRoles.addAll(internalRoleToLdapRoles.get(role));
-        });
+        internalRoles.forEach(role -> ldapRoles.addAll(internalRoleToLdapRoles.get(role)));
 
         Collections.sort(ldapRoles);
         return ldapRoles;

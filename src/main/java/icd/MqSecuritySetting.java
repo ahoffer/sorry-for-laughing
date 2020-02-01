@@ -109,13 +109,11 @@ public class MqSecuritySetting {
 
         String currentWord = "";
         for (char ch : name.toCharArray()) {
-            switch (ch) {
-                case WORD_BREAK:
-                    words.add(currentWord);
-                    currentWord = "";
-                    break;
-                default:
-                    currentWord += ch;
+            if (ch == WORD_BREAK) {
+                words.add(currentWord);
+                currentWord = "";
+            } else {
+                currentWord += ch;
             }
         }
 
@@ -143,9 +141,8 @@ public class MqSecuritySetting {
         if (permissionToInternalRoles.isEmpty()) {
             printStream.println(parentIndent + "\t\t" + "NONE");
         } else {
-            permissionToLdapRoles.forEach((k, v) -> {
-                printStream.println(parentIndent + "\t\t" + k + ":" + String.join(",", v));
-            });
+            permissionToLdapRoles.forEach((k, v) -> printStream
+                .println(parentIndent + "\t\t" + k + ":" + String.join(",", v)));
         }
 
 //        printStream.println(parentIndent + "\tInternal Roles and Permission:");
