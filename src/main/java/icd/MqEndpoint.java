@@ -4,17 +4,17 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
 
 /**
- * This class is part of the Interface Control Document (ICD) generation component. It models the an
+ * This class is part of the Interface Control Document (ICD) generation component. It models an
  * Artemis endpoint. It includes the endpoint's name, routing type (any/multi cast), permissions,
- * and documentation comments.
+ * and documentation comments. This class assumes that every endpoint has a unique name.
  */
-public class MqEndpoint implements Comparable<MqEndpoint> {
+class MqEndpoint implements Comparable<MqEndpoint> {
 
     protected final MqAddress address;
     protected final MqSecuritySetting securitySetting;
@@ -36,11 +36,9 @@ public class MqEndpoint implements Comparable<MqEndpoint> {
 
     /**
      * Return the LDAP roles associated with this permission.
-     *
-     * @return
      */
-    public Map<String, List<String>> getPermissions() {
-        return new HashMap<>(securitySetting.permissionToLdapRoles);
+    public MultiValuedMap<String, String> getPermissions() {
+        return new ArrayListValuedHashMap<>(securitySetting.permissionToLdapRoles);
     }
 
     public String getName() {
@@ -64,10 +62,11 @@ public class MqEndpoint implements Comparable<MqEndpoint> {
 
         printStream.println(parentIndex + "Name: " + getName());
         printStream.println(plusOneIndent + "Routing type: " + getRoutingType());
-        printStream.println(plusOneIndent + "Documentation:");
         if (getDocumentation().isEmpty()) {
-            printStream.println(plusOneIndent + "\tNONE");
+            printStream
+                .println(plusOneIndent + "Documentation: No documentation for this endpoint");
         } else {
+            printStream.println(plusOneIndent + "Documentation:");
             getDocumentation().forEach(c -> c.debugPrintOn(printStream, plusOneIndent));
         }
 

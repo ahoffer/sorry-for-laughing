@@ -10,8 +10,8 @@ import org.jsoup.nodes.Node;
 
 /**
  * This class is part of the Interface Control Document (ICD) generation component. It attempts to
- * create documenation objects from XML comments in the MQ configuration file. The comment has a
- * special tag that identifies its use in the documentation generation process.
+ * create documentation objects from XML comments in the MQ configuration file. Comments have a
+ * special format that identifies its use in the documentation generation process.
  * <p>
  * The format of a documentation comment is
  * <p>
@@ -21,10 +21,21 @@ import org.jsoup.nodes.Node;
  * <p>
  * <!--DESCRIPTION: I am a teapot -->
  */
-public class MqDocumentationCommentFactory {
+class MqDocumentationCommentFactory {
 
+    // The XML element that is the direct parent of the comment nodes
     Element parentXml;
 
+    /**
+     * Pass the XML element that is the direct parent of the comment nodes to process. For example,
+     * to process the DESCRIPTION and REFERENCE comments, pass in the XML element for <address>
+     *
+     * <address>
+     * <!--DESCRIPTION: I am a teapot--> <!--REFERENCE: Publisher is unknown-->
+     * </address>
+     *
+     * @return CommentFactory
+     */
     MqDocumentationCommentFactory(Element parentXml) {
         this.parentXml = parentXml;
     }
@@ -46,7 +57,7 @@ public class MqDocumentationCommentFactory {
 
     /**
      * If the input parameter represents a valid documentation comment, create an object. Otherwise
-     * return null.
+     * return null. Whitespace is trimmed from the comment string.
      *
      * @param comment
      * @return
@@ -61,10 +72,17 @@ public class MqDocumentationCommentFactory {
         return null;
     }
 
+    // Given "DESCRIPTION: I am a teapot", return "I am a teapot"
     static String extractDocumentation(MagicToken token, String comment) {
         return comment.substring(token.toString().length() + 1).trim();
     }
 
+    /**
+     * Return all documentation comments associated withe XML element that was passed into the
+     * constructor.
+     *
+     * @return List of documentation comments or empty list. Guaranteed no nulls in list.
+     */
     public List<MqDocumentationComment> getAllDocumentation() {
         return parentXml.childNodes().stream().map(MqDocumentationCommentFactory::create)
             .filter(Objects::nonNull).collect(

@@ -1,11 +1,11 @@
 package icd;
 
 import java.io.File;
-import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import org.jsoup.nodes.Element;
 
-public class MqAddress {
+class MqAddress {
 
     String routingType;
     String name;
@@ -14,7 +14,7 @@ public class MqAddress {
     // TODO: How do we turn these objects into documentation? Templated Asciidoctor?
     File asciiDoctorTemplate;
 
-    MqAddress(Element xmlAddress) {
+    public MqAddress(Element xmlAddress) {
         name = xmlAddress.attr("name");
         documentationComments = new MqDocumentationCommentFactory(xmlAddress)
             .getAllDocumentation();
@@ -30,7 +30,6 @@ public class MqAddress {
         }
     }
 
-
     public String getRoutingType() {
         return routingType;
     }
@@ -40,9 +39,7 @@ public class MqAddress {
     }
 
     public Collection<MqDocumentationComment> getDocumentationComments() {
-        return documentationComments;
+        return new ArrayList<>(documentationComments);
     }
-
-
 }
 

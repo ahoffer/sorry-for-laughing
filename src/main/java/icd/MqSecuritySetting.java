@@ -2,48 +2,53 @@ package icd;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
 /**
  * This class is part of the Interface Control Document (ICD) generation component. It models the
- * permissions and roles associated with a particular endpoint. It includes the names of the
- * "internal" roles defined as part of the security-settings in the MQ configuration files, as well
- * as the LDAP roles defined in the role-mapping section of the MQ configuration file.
- * <p>
- * Internal to the class is the logic to match an endpoint name with the most specific
- * security-settings that match the endpoint name.
+ * permissions and the roles associated with those permissions for an endpoint. It includes the
+ * names of the "internal" roles defined as part of the security-settings in the MQ configuration
+ * files, as well as the LDAP roles defined in the role-mapping section of the MQ configuration
+ * file. Internal class  logic to matches an endpoint name with the most specific
+ * security-settings.
  */
-public class MqSecuritySetting {
+class MqSecuritySetting {
 
+
+    //    Used to decompose an endpoint's address into "words" and to
     static final char WORD_BREAK = '.';
-    static final int NO_MATCH = -1;
-    static final String MATCH_REMAINING_WORDS = "#";
-    static final int STARTING_SCORE = 0;
+
+    /**
+     * These constants are used to compare an endpoint's address to a security setting's "match
+     * string". The "match string" may include wildcards (an endpoint address does not contain
+     * wildcards).
+     */
     static final String MATCH_ONE_WORD = "*";
+    static final String MATCH_REMAINING_WORDS = "#";
+    static final int NO_MATCH = -1;
+    static final int STARTING_SCORE = 0;
 
     // The "match string" represents the string literals, wild-cards, and word-delimiters
     // associated with the security-settings.
-    // Some examples include "pulse.mission.information", "pulse.#", and "#".
+    // Examples include "pulse.mission.information", "pulse.#", and "#".
     String match = "";
 
     // This field maps permissions like "createNonDurableQueue" to the internal roles that may
     // perform that action, such as "manager" or "broker-client".
     // Roles are always in lexical order.
-    //TODO Replace with multimap?
-    Map<String, List<String>> permissionToInternalRoles = new HashMap<>();
+    MultiValuedMap<String, String> permissionToInternalRoles = new ArrayListValuedHashMap<>();
 
     // Maps permission to LDAP roles. LDAP roles are important to the client application-- the
     // internal roles are not important to them. NOTE that a single internal role may be aliased
     // to multiple LDAP roles. For example, both LDAP roles "ent SOA ESB Sender"
     // and "ent SOA ESB Receiver" map to the internal role "manager".
     // Roles are always in lexical order.
-    //TODO Replace with multimap?
-    Map<String, List<String>> permissionToLdapRoles = new HashMap<>();
+    MultiValuedMap<String, String> permissionToLdapRoles = new ArrayListValuedHashMap<>();
 
-    public MqSecuritySetting(String match, Map<String, List<String>> permissionToInternalRoles,
-        Map<String, List<String>> permissionToLdapRoles) {
+    public MqSecuritySetting(String match, MultiValuedMap<String, String> permissionToInternalRoles,
+        MultiValuedMap<String, String> permissionToLdapRoles) {
         this.match = match;
         this.permissionToInternalRoles = permissionToInternalRoles;
         this.permissionToLdapRoles = permissionToLdapRoles;
@@ -67,7 +72,6 @@ public class MqSecuritySetting {
     }
 
     // TODO Add unit tests
-    // TODO: Add all this lexing/matching stuff to a new class? Move to inner class?
     // The more exact the security setting "match string" matches the input, the higher the score.
     Integer score(String input) {
         String[] inputWords = getWords(input);
@@ -136,12 +140,19 @@ public class MqSecuritySetting {
     }
 
     void debugPrintOn(PrintStream printStream, String parentIndent) {
+
+        if (permissionToInternalRoles.isEmpty()) {
+            printStream
+                .println(parentIndent + "Security: No settings configured for this endpoint!");
+            return;
+        }
+
         printStream.println(parentIndent + "Security: match with security setting '" + match + "'");
         printStream.println(parentIndent + "\tLDAP Roles and Permissions:");
         if (permissionToInternalRoles.isEmpty()) {
             printStream.println(parentIndent + "\t\t" + "NONE");
         } else {
-            permissionToLdapRoles.forEach((k, v) -> printStream
+            permissionToLdapRoles.asMap().forEach((k, v) -> printStream
                 .println(parentIndent + "\t\t" + k + ":" + String.join(",", v)));
         }
 

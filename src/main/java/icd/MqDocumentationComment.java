@@ -2,7 +2,7 @@ package icd;
 
 import java.io.PrintStream;
 
-public class MqDocumentationComment {
+class MqDocumentationComment {
 
     /**
      * This class is part of the Interface Control Document (ICD) generation component. It models an
@@ -16,7 +16,6 @@ public class MqDocumentationComment {
         this.token = token;
         this.text = text;
     }
-
 
     public void debugPrintOn(PrintStream printStream, String parentIndex) {
         String myIndent = parentIndex + "\t";

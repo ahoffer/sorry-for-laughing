@@ -8,18 +8,16 @@ import static org.hamcrest.core.Is.is;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
+import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.io.IOUtils;
-import org.hamcrest.collection.IsMapContaining;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.Test;
 
-public class MqEndpointFactoryParsingTest {
+public class IcdDocumentationUnitTest {
 
     static String getResourceAsString(String filename) throws IOException {
         return IOUtils.toString(
@@ -27,8 +25,8 @@ public class MqEndpointFactoryParsingTest {
             StandardCharsets.UTF_8);
     }
 
-     static File getResourceFile(String filename) {
-        return new File(MqEndpointFactoryComponentTest.class.getResource(filename).getFile());
+    static File getResourceFile(String filename) {
+        return new File(IcdDocumentationUnitTest.class.getResource(filename).getFile());
     }
 
     static Document getResourceAsDocument(String filename) throws IOException {
@@ -52,11 +50,10 @@ public class MqEndpointFactoryParsingTest {
         assertThat(mqSecuritySettings, hasSize(1));
         MqSecuritySetting securitySetting = mqSecuritySettings.get(0);
         assertThat(securitySetting.match, is("input.#"));
-        Map<String, List<String>> permissions = securitySetting.permissionToInternalRoles;
-        assertThat(permissions.size(), is(1));
-        assertThat(permissions, IsMapContaining.hasKey(("type")));
+        MultiValuedMap<String, String> permissions = securitySetting.permissionToInternalRoles;
         assertThat(permissions.get("type"), containsInAnyOrder("one", "two", "three"));
     }
+
 
     @Test
     public void testRecognizedComment() throws IOException {
@@ -71,5 +68,10 @@ public class MqEndpointFactoryParsingTest {
         MqDocumentationComment dc = MqDocumentationCommentFactory
             .create("UNRECOGNIZED: I am not a teapot");
         assertThat(dc, nullValue());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddressesElementNotFound() throws IOException {
+        new MqEndpointFactory(getResourceFile("/missing-addresses.xml")).getAllEndpoints();
     }
 }
