@@ -1,3 +1,0 @@
-<security-setting match="input.#">
-    <permission roles="one,two,three" type="type"/>
-</security-setting>

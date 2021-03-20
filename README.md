@@ -1,2 +1,4 @@
 # Sorry For Laughing
-Temp repo to hold some xml parsing code I'm working on.
+
+Working on blueprint value resolver compatible with Karaf 4.2.6.
+One goal is to minimize external dependencies.
